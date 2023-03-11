@@ -1,0 +1,5 @@
+LAMMPS (27 May 2021)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+if "${if_restart} == 1" then "log log.2 append"
+log log.2 append

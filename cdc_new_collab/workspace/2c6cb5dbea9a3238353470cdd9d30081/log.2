@@ -1,0 +1,720 @@
+units               real
+dimension           3
+# processors          2 2 16
+# processors          2 2 8
+#processors          4 8 2
+processors          * * 2
+
+### only two periodic boundaries
+boundary            p p f
+atom_style          full
+newton              on
+
+##force field
+pair_style          lj/cut/coul/long 12 12
+angle_style         harmonic
+bond_style          harmonic
+dihedral_style      opls
+improper_style      cvff
+kspace_style        pppm/conp 1.0e-5
+kspace_modify       slab 3.0
+pair_modify         mix geometric  ## should be default anyway
+#kspace_style        pppm 1.0e-4
+##atom definition
+
+if "${if_restart} == 0" then     "read_data         sample.data"
+read_data         sample.data
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (35.000000 35.000000 244.86667)
+  8 by 4 by 2 MPI processor grid
+  reading atoms ...
+  22088 atoms
+  scanning bonds ...
+  4 = max bonds/atom
+  scanning angles ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  6 = max dihedrals/atom
+  reading bonds ...
+  11900 bonds
+  reading angles ...
+  18874 angles
+  reading dihedrals ...
+  13536 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.004 seconds
+  read_data CPU = 0.098 seconds
+
+if "${if_restart} == 1" then     "read_restart         restart.*"
+
+special_bonds lj/coul 0.0 0.0 0.5 ## for opls lopes kpl
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.002 seconds
+
+##setting
+# neighbor            2 bin
+
+variable etype equal 1
+group cdc type 1
+8136 atoms in group cdc
+group sol subtract all cdc
+13952 atoms in group sol
+
+group allatom union cdc sol
+22088 atoms in group allatom
+
+group leftele molecule 3
+3620 atoms in group leftele
+group rightele molecule 1
+3620 atoms in group rightele
+
+group ele union leftele rightele
+7240 atoms in group ele
+
+variable q atom q
+compute qleft leftele reduce sum v_q
+compute qright rightele reduce sum v_q
+compute tempsl sol temp
+
+
+##outputs
+thermo              100
+neigh_modify every 2 delay 0 check yes
+thermo_style custom step c_tempsl c_qleft c_qright # f_e
+thermo_modify flush yes
+#thermo_modify warn 5
+
+if "${if_restart} == 0" then "shell echo 0 > nrestart"
+shell echo 0 > nrestart
+
+# variable xtcstep equal step
+
+variable nr file nrestart
+# dump 7 all xtc 100 conp_${xtcstep}.xtc
+dump 7 all xtc 1000 conp_${nr}.xtc
+dump 7 all xtc 1000 conp_0.xtc
+dump_modify 7 sort id
+shell echo $(v_nr+1) > nrestart # increment for next run
+shell echo 1 > nrestart 
+
+
+dump 8 ele custom 1000 ele.lammpstrj id q
+dump_modify 8 sort id
+if "${if_restart} == 1" then     "dump_modify 8 append yes"
+
+##run_style           verlet
+timestep            2
+velocity cdc set 0.0 0.0 0.0
+# fix freezecdc cdc setforce 0.0 0.0 0.0
+#minimize 1.0e-4 1.0e-6 100 1000
+
+# fix constrainH all shake 0.0001 20 0 m 1.007947
+if "${if_wat} == 0" then "fix constrainH all shake 0.0001 20 0 m 1.007947"
+fix constrainH all shake 0.0001 20 0 m 1.007947
+       0 = # of size 2 clusters
+       0 = # of size 3 clusters
+    1232 = # of size 4 clusters
+       0 = # of frozen angles
+  find clusters CPU = 0.002 seconds
+if "${if_wat} == 1" then "fix constrainH all shake 0.0001 20 0 m 1.007947 a 1"
+
+
+timer timeout 00:05:00
+New timer settings: style=normal  mode=nosync  timeout=00:05:00
+
+fix 1 sol nvt temp ${temperature} ${temperature} $(100.0*dt)
+fix 1 sol nvt temp 400 ${temperature} $(100.0*dt)
+fix 1 sol nvt temp 400 400 $(100.0*dt)
+fix 1 sol nvt temp 400 400 200
+
+variable restartInterval equal 1000
+variable ccmEnd equal 6000
+variable zeroPotentialStart equal ${ccmEnd}
+variable zeroPotentialStart equal 6000
+variable zeroPotentialEnd equal 9000
+variable nonzeroPotentialStart equal ${zeroPotentialEnd}
+variable nonzeroPotentialStart equal 9000
+variable nonzeroPotentialEnd equal 12000
+
+variable cstep1 equal step
+if "${cstep1} < ${ccmEnd}" then     "restart ${restartInterval} restart"     "run ${ccmEnd} upto"
+restart ${restartInterval} restart
+restart 1000 restart
+run ${ccmEnd} upto
+run 6000 upto
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036023621
+  estimated relative force accuracy = 1.0848406e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+WARNING: Inconsistent image flags (src/domain.cpp:813)
+Per MPI rank memory allocation (min/avg/max) = 13.94 | 15.31 | 15.78 Mbytes
+Step c_tempsl c_qleft c_qright 
+       0            0            0            0 
+     100    212.92938            0            0 
+     200    219.10168            0            0 
+     300    244.43422            0            0 
+     400    276.06387            0            0 
+     500    286.21079            0            0 
+     600    338.39261            0            0 
+     700    348.08151            0            0 
+     800    388.37997            0            0 
+     900    393.07108            0            0 
+    1000    418.25873            0            0 
+    1100    406.46512            0            0 
+    1200    401.08277            0            0 
+    1300    392.45863            0            0 
+    1400    387.93904            0            0 
+    1500     403.4026            0            0 
+    1600    405.99825            0            0 
+    1700    409.66467            0            0 
+    1800      402.722            0            0 
+    1900    399.19943            0            0 
+    2000    387.12335            0            0 
+    2100    396.48539            0            0 
+    2200    404.71318            0            0 
+    2300    406.06745            0            0 
+    2400    404.49948            0            0 
+    2500    394.36758            0            0 
+    2600    394.70817            0            0 
+    2700    398.80689            0            0 
+    2800    406.48753            0            0 
+    2900    404.69903            0            0 
+    3000    402.26993            0            0 
+    3100    392.31594            0            0 
+    3200    398.32994            0            0 
+    3300    399.47549            0            0 
+    3400    406.39684            0            0 
+    3500    406.03766            0            0 
+    3600    397.58055            0            0 
+    3700    397.00754            0            0 
+    3800    397.84816            0            0 
+    3900    400.41726            0            0 
+    4000    402.70715            0            0 
+    4100    402.81572            0            0 
+    4200    401.04435            0            0 
+    4300     398.4878            0            0 
+    4400    397.21831            0            0 
+    4500    401.32273            0            0 
+    4600    398.11117            0            0 
+    4700    400.21288            0            0 
+    4800    396.51086            0            0 
+    4900     398.0759            0            0 
+    5000    402.91182            0            0 
+    5100    402.18185            0            0 
+    5200    396.03465            0            0 
+    5300    401.99445            0            0 
+    5400    402.18993            0            0 
+    5500    400.10631            0            0 
+    5600    401.96255            0            0 
+    5700    398.56251            0            0 
+    5800    402.75186            0            0 
+    5900    398.94738            0            0 
+    6000    399.97219            0            0 
+Loop time of 81.2699 on 64 procs for 6000 steps with 22088 atoms
+
+Performance: 12.757 ns/day, 1.881 hours/ns, 73.828 timesteps/s
+99.3% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 17.62      | 20.093     | 22.061     |  22.9 | 24.72
+Bond    | 0.33515    | 0.4835     | 0.60886    |   9.1 |  0.59
+Kspace  | 12.125     | 14.091     | 16.488     |  26.9 | 17.34
+Neigh   | 2.9696     | 3.016      | 3.0709     |   1.2 |  3.71
+Comm    | 4.7871     | 4.9772     | 5.1617     |   4.8 |  6.12
+Output  | 34.121     | 34.121     | 34.156     |   0.1 | 41.99
+Modify  | 3.7838     | 3.9044     | 4.0345     |   4.6 |  4.80
+Other   |            | 0.5834     |            |       |  0.72
+
+Nlocal:        345.125 ave         383 max         306 min
+Histogram: 2 2 10 5 13 13 3 8 3 5
+Nghost:        11467.3 ave       11576 max       11330 min
+Histogram: 2 4 5 6 9 8 7 11 9 3
+Neighs:        142345.0 ave      162294 max      123084 min
+Histogram: 2 4 7 13 6 10 8 9 2 3
+
+Total # of neighbors = 9110050
+Ave neighs/atom = 412.44341
+Ave special neighs/atom = 4.0121333
+Neighbor list builds = 523
+Dangerous builds = 0
+
+variable cstep2 equal step
+
+if "(${cstep2} >= ${zeroPotentialStart}) && (${cstep2} < ${zeroPotentialEnd})" then     "fix cpm leftele conp 1 rightele 1.979 0 log_conp etypes 1 1 pppm"     "restart ${restartInterval} restart"     "run ${zeroPotentialEnd} upto"     "unfix cpm"
+fix cpm leftele conp 1 rightele 1.979 0 log_conp etypes 1 1 pppm
+restart ${restartInterval} restart
+restart 1000 restart
+run ${zeroPotentialEnd} upto
+run 9000 upto
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036023621
+  estimated relative force accuracy = 1.0848406e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  3 neighbor lists, perpetual/occasional/extra = 2 1 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+  (2) fix conp, occasional, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) fix conp, perpetual, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+WARNING: Inconsistent image flags (src/domain.cpp:813)
+conp output: <e,e> = 0.20333957
+conp output: <d,d> = 0.053573272
+Per MPI rank memory allocation (min/avg/max) = 15.46 | 16.83 | 17.48 Mbytes
+Step c_tempsl c_qleft c_qright 
+    6000    399.97219  0.072123432 -0.072123432 
+    6100    403.88978 -0.037571585  0.037571585 
+    6200    401.28013  0.052079667 -0.052079667 
+    6300    397.45414 -0.0052913254 0.0052913254 
+    6400    399.74583 -0.0034284354 0.0034284354 
+    6500    401.54023  0.076454525 -0.076454525 
+    6600    397.68586  0.053847828 -0.053847828 
+    6700    398.79739  0.052945021 -0.052945021 
+    6800    400.38079   0.13496877  -0.13496877 
+    6900    400.43254    0.1255034   -0.1255034 
+    7000    398.95485   0.10624393  -0.10624393 
+    7100    395.67798     0.189926    -0.189926 
+    7200     399.3874  0.057706466 -0.057706466 
+    7300    402.34075  0.024917035 -0.024917035 
+    7400    402.45396 -0.037008085  0.037008085 
+    7500    401.43733  0.055950643 -0.055950643 
+    7600    395.80336  0.045842479 -0.045842479 
+    7700     396.6799  0.060817073 -0.060817073 
+    7800    396.32483 -0.013038896  0.013038896 
+WARNING: Wall time limit reached (src/timer.cpp:235)
+Loop time of 40.9682 on 64 procs for 1860 steps with 22088 atoms
+
+Performance: 7.845 ns/day, 3.059 hours/ns, 45.401 timesteps/s
+99.9% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 6.6693     | 7.8862     | 8.8465     |  17.0 | 19.25
+Bond    | 0.14446    | 0.18406    | 0.23157    |   5.3 |  0.45
+Kspace  | 3.9073     | 4.824      | 6.0855     |  21.9 | 11.77
+Neigh   | 1.2119     | 1.224      | 1.236      |   0.6 |  2.99
+Comm    | 1.5318     | 1.6059     | 1.6819     |   3.2 |  3.92
+Output  | 2.2385     | 2.2386     | 2.2477     |   0.1 |  5.46
+Modify  | 22.605     | 22.782     | 22.918     |   1.2 | 55.61
+Other   |            | 0.223      |            |       |  0.54
+
+Nlocal:        345.125 ave         386 max         312 min
+Histogram: 3 7 8 9 8 13 5 8 0 3
+Nghost:        11465.3 ave       11548 max       11331 min
+Histogram: 1 0 2 8 12 7 9 6 11 8
+Neighs:        142430.0 ave      163908 max      122173 min
+Histogram: 2 3 7 8 13 13 10 3 3 2
+
+Total # of neighbors = 9115548
+Ave neighs/atom = 412.69232
+Ave special neighs/atom = 4.0121333
+Neighbor list builds = 162
+Dangerous builds = 0
+unfix cpm
+
+variable cstep3 equal step
+if "${cstep3} >= ${nonzeroPotentialStart}" then     "fix cpm leftele conp 1 rightele 1.979 ${voltage} log_conp etypes 1 1 pppm"     "restart ${restartInterval} restart"     "run ${nonzeroPotentialEnd} upto"     "write_restart restart.final"
+Total wall time: 0:05:00
+if "${if_restart} == 0" then "log log.2"
+units               real
+dimension           3
+# processors          2 2 16
+# processors          2 2 8
+#processors          4 8 2
+processors          * * 2
+
+### only two periodic boundaries
+boundary            p p f
+atom_style          full
+newton              on
+
+##force field
+pair_style          lj/cut/coul/long 12 12
+angle_style         harmonic
+bond_style          harmonic
+dihedral_style      opls
+improper_style      cvff
+kspace_style        pppm/conp 1.0e-5
+kspace_modify       slab 3.0
+pair_modify         mix geometric  ## should be default anyway
+#kspace_style        pppm 1.0e-4
+##atom definition
+
+if "${if_restart} == 0" then     "read_data         sample.data"
+
+if "${if_restart} == 1" then     "read_restart         restart.*"
+read_restart         restart.*
+Reading restart file ...
+  restart file = 27 May 2021, LAMMPS = 27 May 2021
+  restoring atom style full from restart
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (35.000000 35.000000 244.86667)
+  8 by 4 by 2 MPI processor grid
+  restoring pair style lj/cut/coul/long from restart
+  restoring bond style harmonic from restart
+  restoring angle style harmonic from restart
+  restoring dihedral style opls from restart
+  restoring improper style cvff from restart
+  22088 atoms
+  11900 bonds
+  18874 angles
+  13536 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.004 seconds
+  read_restart CPU = 0.020 seconds
+
+special_bonds lj/coul 0.0 0.0 0.5 ## for opls lopes kpl
+
+##setting
+# neighbor            2 bin
+
+variable etype equal 1
+group cdc type 1
+8136 atoms in group cdc
+group sol subtract all cdc
+13952 atoms in group sol
+
+group allatom union cdc sol
+22088 atoms in group allatom
+
+group leftele molecule 3
+3620 atoms in group leftele
+group rightele molecule 1
+3620 atoms in group rightele
+
+group ele union leftele rightele
+7240 atoms in group ele
+
+variable q atom q
+compute qleft leftele reduce sum v_q
+compute qright rightele reduce sum v_q
+compute tempsl sol temp
+
+
+##outputs
+thermo              100
+neigh_modify every 2 delay 0 check yes
+thermo_style custom step c_tempsl c_qleft c_qright # f_e
+thermo_modify flush yes
+#thermo_modify warn 5
+
+if "${if_restart} == 0" then "shell echo 0 > nrestart"
+
+# variable xtcstep equal step
+
+variable nr file nrestart
+# dump 7 all xtc 100 conp_${xtcstep}.xtc
+dump 7 all xtc 1000 conp_${nr}.xtc
+dump 7 all xtc 1000 conp_1.xtc
+dump_modify 7 sort id
+shell echo $(v_nr+1) > nrestart # increment for next run
+shell echo 2 > nrestart 
+
+
+dump 8 ele custom 1000 ele.lammpstrj id q
+dump_modify 8 sort id
+if "${if_restart} == 1" then     "dump_modify 8 append yes"
+dump_modify 8 append yes
+
+##run_style           verlet
+timestep            2
+velocity cdc set 0.0 0.0 0.0
+# fix freezecdc cdc setforce 0.0 0.0 0.0
+#minimize 1.0e-4 1.0e-6 100 1000
+
+# fix constrainH all shake 0.0001 20 0 m 1.007947
+if "${if_wat} == 0" then "fix constrainH all shake 0.0001 20 0 m 1.007947"
+fix constrainH all shake 0.0001 20 0 m 1.007947
+       0 = # of size 2 clusters
+       0 = # of size 3 clusters
+    1232 = # of size 4 clusters
+       0 = # of frozen angles
+  find clusters CPU = 0.002 seconds
+if "${if_wat} == 1" then "fix constrainH all shake 0.0001 20 0 m 1.007947 a 1"
+
+
+timer timeout 00:05:00
+New timer settings: style=normal  mode=nosync  timeout=00:05:00
+
+fix 1 sol nvt temp ${temperature} ${temperature} $(100.0*dt)
+fix 1 sol nvt temp 400 ${temperature} $(100.0*dt)
+fix 1 sol nvt temp 400 400 $(100.0*dt)
+fix 1 sol nvt temp 400 400 200
+Resetting global fix info from restart file:
+  fix style: nvt, fix ID: 1
+
+variable restartInterval equal 1000
+variable ccmEnd equal 6000
+variable zeroPotentialStart equal ${ccmEnd}
+variable zeroPotentialStart equal 6000
+variable zeroPotentialEnd equal 9000
+variable nonzeroPotentialStart equal ${zeroPotentialEnd}
+variable nonzeroPotentialStart equal 9000
+variable nonzeroPotentialEnd equal 12000
+
+variable cstep1 equal step
+if "${cstep1} < ${ccmEnd}" then     "restart ${restartInterval} restart"     "run ${ccmEnd} upto"
+
+variable cstep2 equal step
+
+if "(${cstep2} >= ${zeroPotentialStart}) && (${cstep2} < ${zeroPotentialEnd})" then     "fix cpm leftele conp 1 rightele 1.979 0 log_conp etypes 1 1 pppm"     "restart ${restartInterval} restart"     "run ${zeroPotentialEnd} upto"     "unfix cpm"
+fix cpm leftele conp 1 rightele 1.979 0 log_conp etypes 1 1 pppm
+restart ${restartInterval} restart
+restart 1000 restart
+run ${zeroPotentialEnd} upto
+run 9000 upto
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036023621
+  estimated relative force accuracy = 1.0848406e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+All restart file global fix info was re-assigned
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  3 neighbor lists, perpetual/occasional/extra = 2 1 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+  (2) fix conp, occasional, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) fix conp, perpetual, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+WARNING: Inconsistent image flags (src/domain.cpp:813)
+conp output: <e,e> = 0.20333957
+conp output: <d,d> = 0.053573272
+Per MPI rank memory allocation (min/avg/max) = 15.21 | 16.57 | 17.04 Mbytes
+Step c_tempsl c_qleft c_qright 
+    6000    399.97219  0.072123432 -0.072123432 
+    6100    403.88978 -0.037571585  0.037571585 
+    6200    401.28013  0.052079667 -0.052079667 
+    6300    397.45414 -0.0052913258 0.0052913258 
+    6400    399.74583 -0.0034284356 0.0034284356 
+    6500    401.54024   0.07645454  -0.07645454 
+    6600    397.68587  0.053847794 -0.053847794 
+    6700     398.7973  0.052944945 -0.052944945 
+    6800    400.38101   0.13497236  -0.13497236 
+    6900    400.43169   0.12541147  -0.12541147 
+    7000     398.9446   0.10617542  -0.10617542 
+    7100    395.71319   0.19054221  -0.19054221 
+    7200    399.70057  0.061945166 -0.061945166 
+    7300    402.07913  0.030955191 -0.030955191 
+    7400    401.43112 -0.017066319  0.017066319 
+    7500    399.14264  0.075450306 -0.075450306 
+    7600    396.27014   0.11026184  -0.11026184 
+    7700    398.94288   0.11546024  -0.11546024 
+    7800    401.73928  0.053768789 -0.053768789 
+    7900    399.13707 -0.0061338604 0.0061338604 
+    8000    403.29202 -0.087252593  0.087252593 
+    8100    400.37104  -0.14363536   0.14363536 
+    8200    401.40823   -0.1001869    0.1001869 
+    8300    403.22665  -0.11079338   0.11079338 
+    8400    392.85704 -0.078361997  0.078361997 
+    8500    403.45468 -0.013537518  0.013537518 
+    8600    398.58599 -0.033566368  0.033566368 
+    8700     402.5168 -0.041768124  0.041768124 
+    8800    396.91663  -0.13034409   0.13034409 
+    8900     399.4138  -0.10581652   0.10581652 
+    9000    397.09177  -0.11858568   0.11858568 
+Loop time of 66.0339 on 64 procs for 3000 steps with 22088 atoms
+
+Performance: 7.851 ns/day, 3.057 hours/ns, 45.431 timesteps/s
+99.8% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 9.2641     | 10.96      | 12.196     |  20.1 | 16.60
+Bond    | 0.19301    | 0.25102    | 0.32644    |   6.1 |  0.38
+Kspace  | 6.0198     | 7.2903     | 9.0611     |  25.0 | 11.04
+Neigh   | 1.6167     | 1.6406     | 1.6604     |   1.0 |  2.48
+Comm    | 2.4007     | 2.5341     | 2.659      |   4.3 |  3.84
+Output  | 7.8949     | 7.8952     | 7.9116     |   0.1 | 11.96
+Modify  | 34.777     | 35.105     | 35.256     |   1.6 | 53.16
+Other   |            | 0.3576     |            |       |  0.54
+
+Nlocal:        345.125 ave         385 max         304 min
+Histogram: 2 4 5 9 10 10 13 5 3 3
+Nghost:        11452.1 ave       11556 max       11327 min
+Histogram: 2 3 5 10 9 4 14 7 6 4
+Neighs:        142411.0 ave      162439 max      119071 min
+Histogram: 2 1 7 8 8 11 14 5 5 3
+
+Total # of neighbors = 9114286
+Ave neighs/atom = 412.63519
+Ave special neighs/atom = 4.0121333
+Neighbor list builds = 267
+Dangerous builds = 0
+unfix cpm
+
+variable cstep3 equal step
+if "${cstep3} >= ${nonzeroPotentialStart}" then     "fix cpm leftele conp 1 rightele 1.979 ${voltage} log_conp etypes 1 1 pppm"     "restart ${restartInterval} restart"     "run ${nonzeroPotentialEnd} upto"     "write_restart restart.final"
+fix cpm leftele conp 1 rightele 1.979 ${voltage} log_conp etypes 1 1 pppm
+fix cpm leftele conp 1 rightele 1.979 2 log_conp etypes 1 1 pppm
+restart ${restartInterval} restart
+restart 1000 restart
+run ${nonzeroPotentialEnd} upto
+run 12000 upto
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036026677
+  estimated relative force accuracy = 1.0849327e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  3 neighbor lists, perpetual/occasional/extra = 2 1 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+  (2) fix conp, occasional, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) fix conp, perpetual, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+WARNING: Inconsistent image flags (src/domain.cpp:813)
+conp output: <e,e> = 0.20333957
+conp output: <d,d> = 0.053573272
+Per MPI rank memory allocation (min/avg/max) = 15.46 | 16.83 | 17.47 Mbytes
+Step c_tempsl c_qleft c_qright 
+    9000    397.09177  -0.22573222   0.22573222 
+WARNING: Wall time limit reached (src/timer.cpp:235)
+Loop time of 0.17948 on 64 procs for 10 steps with 22088 atoms
+
+Performance: 9.628 ns/day, 2.493 hours/ns, 55.717 timesteps/s
+100.0% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.025037   | 0.030182   | 0.034893   |   1.2 | 16.82
+Bond    | 0.00060167 | 0.00085442 | 0.0011644  |   0.0 |  0.48
+Kspace  | 0.02003    | 0.024622   | 0.030123   |   1.3 | 13.72
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.007923   | 0.0082968  | 0.0086213  |   0.2 |  4.62
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0.11364    | 0.11438    | 0.1148     |   0.1 | 63.73
+Other   |            | 0.00114    |            |       |  0.64
+
+Nlocal:        345.125 ave         385 max         304 min
+Histogram: 2 4 5 9 10 10 13 5 3 3
+Nghost:        11452.1 ave       11556 max       11327 min
+Histogram: 2 3 5 10 9 4 14 7 6 4
+Neighs:        142411.0 ave      162439 max      119071 min
+Histogram: 2 1 7 8 8 11 14 5 5 3
+
+Total # of neighbors = 9114286
+Ave neighs/atom = 412.63519
+Ave special neighs/atom = 4.0121333
+Neighbor list builds = 1
+Dangerous builds = 0
+write_restart restart.final
+System init for write_restart ...
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036026652
+  estimated relative force accuracy = 1.0849319e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Total wall time: 0:07:13

@@ -1,0 +1,322 @@
+{
+  "7be66ef6b8159e6685b89c8af1959925": {
+    "case": "neat_emimtfsi",
+    "voltage": 0,
+    "seed": 0
+  },
+  "7bf434c9193f5c9905c91bda1fd15e33": {
+    "case": "neat_emimtfsi",
+    "voltage": 0,
+    "seed": 1
+  },
+  "165d79fbab215ca05cb385ddc228e396": {
+    "case": "neat_emimtfsi",
+    "voltage": 0,
+    "seed": 2
+  },
+  "cc09e369dae7f765be9b85773909a431": {
+    "case": "neat_emimtfsi",
+    "voltage": 0,
+    "seed": 3
+  },
+  "d0751c0d5285e637d59d03bdd3dfd289": {
+    "case": "neat_emimtfsi",
+    "voltage": 1,
+    "seed": 0
+  },
+  "d476222e6f4feffb34acce208f07a2ea": {
+    "case": "neat_emimtfsi",
+    "voltage": 1,
+    "seed": 1
+  },
+  "c38ef1532fe5962dcd6761c68c0520f3": {
+    "case": "neat_emimtfsi",
+    "voltage": 1,
+    "seed": 2
+  },
+  "f3c0c1858136bfce66adcffa62684036": {
+    "case": "neat_emimtfsi",
+    "voltage": 1,
+    "seed": 3
+  },
+  "b67601962cf26e2ef4ef6110095cf9ad": {
+    "case": "neat_emimtfsi",
+    "voltage": 2,
+    "seed": 0
+  },
+  "ddc254b43da9c2bec174fec34d7dab1d": {
+    "case": "neat_emimtfsi",
+    "voltage": 2,
+    "seed": 1
+  },
+  "67200b7bad6389eeb3cfbf0c1827973d": {
+    "case": "neat_emimtfsi",
+    "voltage": 2,
+    "seed": 2
+  },
+  "c9502f78dc35fabb85821a0c7d7227f1": {
+    "case": "neat_emimtfsi",
+    "voltage": 2,
+    "seed": 3
+  },
+  "96e0d2442c967298fa652537ef6ebd92": {
+    "case": "neat_emimtfsi",
+    "voltage": 3,
+    "seed": 0
+  },
+  "6025e1cb204d6d129fd4bb49b3db887d": {
+    "case": "neat_emimtfsi",
+    "voltage": 3,
+    "seed": 1
+  },
+  "48d4ca1dcfd69a89eeb1b6ab1116e18d": {
+    "case": "neat_emimtfsi",
+    "voltage": 3,
+    "seed": 2
+  },
+  "b6b9557b11979a52cde54f63ec129568": {
+    "case": "neat_emimtfsi",
+    "voltage": 3,
+    "seed": 3
+  },
+  "946af28881120939c96404dc86c6e9c4": {
+    "case": "acn_emimtfsi",
+    "voltage": 0,
+    "seed": 0
+  },
+  "62615cd39727a58c6ed0e24ec73d5398": {
+    "case": "acn_emimtfsi",
+    "voltage": 0,
+    "seed": 1
+  },
+  "68bf8c4c29df68cf4f7a7a350ebeff23": {
+    "case": "acn_emimtfsi",
+    "voltage": 0,
+    "seed": 2
+  },
+  "a23a9a47a6f0a6322b1d87a100ca9a72": {
+    "case": "acn_emimtfsi",
+    "voltage": 0,
+    "seed": 3
+  },
+  "e78b1bf1aeab007f2e3ffdb551ee2527": {
+    "case": "acn_emimtfsi",
+    "voltage": 1,
+    "seed": 0
+  },
+  "6591ffae9de12b2b6524fc377687021c": {
+    "case": "acn_emimtfsi",
+    "voltage": 1,
+    "seed": 1
+  },
+  "28d9b08abab5434b0a6f19395eeea6b6": {
+    "case": "acn_emimtfsi",
+    "voltage": 1,
+    "seed": 2
+  },
+  "8cb80acaa7e7c554604a178af03010a7": {
+    "case": "acn_emimtfsi",
+    "voltage": 1,
+    "seed": 3
+  },
+  "a8eba4629c911f3ee6a1b29b39cb79f4": {
+    "case": "acn_emimtfsi",
+    "voltage": 2,
+    "seed": 0
+  },
+  "4ffd05c3c449ab0fbd594e943e4d38e0": {
+    "case": "acn_emimtfsi",
+    "voltage": 2,
+    "seed": 1
+  },
+  "a2ffd48e198c67d0af05e2aa35a21268": {
+    "case": "acn_emimtfsi",
+    "voltage": 2,
+    "seed": 2
+  },
+  "e93cf1a0d88e20df6baad70c842cac69": {
+    "case": "acn_emimtfsi",
+    "voltage": 2,
+    "seed": 3
+  },
+  "47a054a01573b790e24ee603c8c5e908": {
+    "case": "acn_emimtfsi",
+    "voltage": 3,
+    "seed": 0
+  },
+  "6c90e3f215b10626a92e6f40f3d5d6c3": {
+    "case": "acn_emimtfsi",
+    "voltage": 3,
+    "seed": 1
+  },
+  "3a1614cae13ee36a439b96166475e0da": {
+    "case": "acn_emimtfsi",
+    "voltage": 3,
+    "seed": 2
+  },
+  "e57bc2b351b5217bad64beea71e79e63": {
+    "case": "acn_emimtfsi",
+    "voltage": 3,
+    "seed": 3
+  },
+  "080e6fba1a0ec2152a9e26004cf90366": {
+    "case": "acn_litfsi",
+    "voltage": 0,
+    "seed": 0
+  },
+  "a47867678877fabe0de59996aa6821c1": {
+    "case": "acn_litfsi",
+    "voltage": 0,
+    "seed": 1
+  },
+  "f81179edeca67c77106bd450643cf1a0": {
+    "case": "acn_litfsi",
+    "voltage": 0,
+    "seed": 2
+  },
+  "f5c2ff2d3a8f8efb4c31ca8a86727fe9": {
+    "case": "acn_litfsi",
+    "voltage": 0,
+    "seed": 3
+  },
+  "47dbff0dbe5481ad1d55879346c49c9d": {
+    "case": "acn_litfsi",
+    "voltage": 1,
+    "seed": 0
+  },
+  "69d41de85ed5e6558c88951f8029e733": {
+    "case": "acn_litfsi",
+    "voltage": 1,
+    "seed": 1
+  },
+  "59283aa1dd56b15cd3c029083eb56cd8": {
+    "case": "acn_litfsi",
+    "voltage": 1,
+    "seed": 2
+  },
+  "beaeefa984726dfe89f46338a7beaea4": {
+    "case": "acn_litfsi",
+    "voltage": 1,
+    "seed": 3
+  },
+  "c75fc55c8f62f0b0d4b7757d472d1223": {
+    "case": "acn_litfsi",
+    "voltage": 2,
+    "seed": 0
+  },
+  "205dbeb29c4128a6e633a80f6107e538": {
+    "case": "acn_litfsi",
+    "voltage": 2,
+    "seed": 1
+  },
+  "2c6cb5dbea9a3238353470cdd9d30081": {
+    "case": "acn_litfsi",
+    "voltage": 2,
+    "seed": 2
+  },
+  "1522eb0620a747744ca20eff41986c67": {
+    "case": "acn_litfsi",
+    "voltage": 2,
+    "seed": 3
+  },
+  "ab05642e795776d2b5252f7b83877b5b": {
+    "case": "acn_litfsi",
+    "voltage": 3,
+    "seed": 0
+  },
+  "2afedc74cff73ebccf0b494e4aa0f852": {
+    "case": "acn_litfsi",
+    "voltage": 3,
+    "seed": 1
+  },
+  "b6dac28081018063bf67ec84c2ee8c47": {
+    "case": "acn_litfsi",
+    "voltage": 3,
+    "seed": 2
+  },
+  "0a513f2cbb3de72de3e2a76e447d1eb3": {
+    "case": "acn_litfsi",
+    "voltage": 3,
+    "seed": 3
+  },
+  "ebf001974627bbdae85163c474bf28e2": {
+    "case": "wat_litfsi",
+    "voltage": 0,
+    "seed": 0
+  },
+  "059538474e926172f02c06057c8817a3": {
+    "case": "wat_litfsi",
+    "voltage": 0,
+    "seed": 1
+  },
+  "106e39704a546c173977c19a08c6e3bb": {
+    "case": "wat_litfsi",
+    "voltage": 0,
+    "seed": 2
+  },
+  "f4947f50a9eb2cc79cd6e79e2d162e5b": {
+    "case": "wat_litfsi",
+    "voltage": 0,
+    "seed": 3
+  },
+  "b7b80be0ddcfafb7b027c4567cb2d3ea": {
+    "case": "wat_litfsi",
+    "voltage": 1,
+    "seed": 0
+  },
+  "99c194940fe00edec3dbcbd239274fd4": {
+    "case": "wat_litfsi",
+    "voltage": 1,
+    "seed": 1
+  },
+  "3bb6f2286d6c456494133a4ebac6fa07": {
+    "case": "wat_litfsi",
+    "voltage": 1,
+    "seed": 2
+  },
+  "bb01c3475e2a3a74b3374ccf00a30936": {
+    "case": "wat_litfsi",
+    "voltage": 1,
+    "seed": 3
+  },
+  "e07ca4dfea1aae05b0faf1d88b871e5e": {
+    "case": "wat_litfsi",
+    "voltage": 2,
+    "seed": 0
+  },
+  "ece9d3f354d9c4370d0bd96953b02d94": {
+    "case": "wat_litfsi",
+    "voltage": 2,
+    "seed": 1
+  },
+  "46807ba5f144e8ea1c70ed864f56b8d3": {
+    "case": "wat_litfsi",
+    "voltage": 2,
+    "seed": 2
+  },
+  "4c828e098942f695cd6ce94ade98f7c7": {
+    "case": "wat_litfsi",
+    "voltage": 2,
+    "seed": 3
+  },
+  "0119db2d07f6ca4f6d96d3ad40827e77": {
+    "case": "wat_litfsi",
+    "voltage": 3,
+    "seed": 0
+  },
+  "cae3c9f73473133eec7c01427807dff8": {
+    "case": "wat_litfsi",
+    "voltage": 3,
+    "seed": 1
+  },
+  "45dd2b3b08942cfb0f3ca0f98a7a027d": {
+    "case": "wat_litfsi",
+    "voltage": 3,
+    "seed": 2
+  },
+  "e3059bcbfb9503991d9775315a928a4f": {
+    "case": "wat_litfsi",
+    "voltage": 3,
+    "seed": 3
+  }
+}
