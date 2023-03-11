@@ -22,7 +22,7 @@ sample_file = "sample.gro"
 unwrapped_file = 'sample_unwrapped.xtc'
 conp_file = "restart.final"
 lammps_init_file =  "sample.data"
-restart_file = 'file.restart.100000'
+restart_file = 'restart.1000'
 
 class Project(FlowProject):
     pass
@@ -41,7 +41,7 @@ def run_cpm(job):
 def _lammps_str(job, 
                 if_restart=0, 
                 if_wat =0, 
-                in_path = 'lammps_input/in.data_gcc', 
+                in_path = 'lammps_input/in.data_gcc_test', 
                 exe='/global/cfs/cdirs/m1046/Xiaobo/installed_software/lammps_jan_3/build_gcc/lmp_mpi'):
     
     """Helper function, returns lammps command string for operation 
@@ -59,7 +59,7 @@ def _lammps_str(job,
     
     print('if_restart is ', if_restart)
 
-    cmd ='srun --exclusive --ntasks=32 {exe} -in {input} '\
+    cmd ='srun --exclusive --ntasks=64 {exe} -in {input} '\
         '-var voltage {voltage} '\
         '-var if_restart {if_restart} '\
         '-var if_wat {if_wat} '\
@@ -78,8 +78,6 @@ def rerun_cpmed(job):
 @flow.cmd
 def rerun_cpm(job):
     return _lammps_str(job, if_restart=1)
-
-
 
 q_file = "q.txt"
 @Project.label
