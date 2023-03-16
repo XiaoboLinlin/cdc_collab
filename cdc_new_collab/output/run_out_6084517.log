@@ -1,0 +1,254 @@
+LAMMPS (27 May 2021)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Reading restart file ...
+  restart file = 27 May 2021, LAMMPS = 27 May 2021
+  restoring atom style full from restart
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (35.000000 35.000000 244.86667)
+  8 by 4 by 2 MPI processor grid
+  restoring pair style lj/cut/coul/long from restart
+  restoring bond style harmonic from restart
+  restoring angle style harmonic from restart
+  restoring dihedral style opls from restart
+  restoring improper style cvff from restart
+  22088 atoms
+  11900 bonds
+  18874 angles
+  13536 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.004 seconds
+  read_restart CPU = 0.026 seconds
+8136 atoms in group cdc
+13952 atoms in group sol
+22088 atoms in group allatom
+3620 atoms in group leftele
+3620 atoms in group rightele
+7240 atoms in group ele
+Finding SHAKE clusters ...
+       0 = # of size 2 clusters
+       0 = # of size 3 clusters
+    1232 = # of size 4 clusters
+       0 = # of frozen angles
+  find clusters CPU = 0.002 seconds
+New timer settings: style=normal  mode=nosync  timeout=00:30:00
+Resetting global fix info from restart file:
+  fix style: nvt, fix ID: 1
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0036026531
+  estimated relative force accuracy = 1.0849283e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+All restart file global fix info was re-assigned
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  3 neighbor lists, perpetual/occasional/extra = 2 1 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+  (2) fix conp, occasional, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) fix conp, perpetual, skip from (1)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 12000
+  Time step     : 2
+  Walltime left : 0:29:59.93
+WARNING: Inconsistent image flags (src/domain.cpp:813)
+Fix conp is now calculating A matrix ...  ... done!
+conp output: <e,e> = 0.20333957
+conp output: <d,d> = 0.053573272
+Per MPI rank memory allocation (min/avg/max) = 15.20 | 16.57 | 17.05 Mbytes
+Step c_tempsl c_qleft c_qright 
+   12000    399.56656   -0.6819653    0.6819653 
+   12100    397.88658  -0.68280483   0.68280483 
+   12200    403.88172  -0.73825506   0.73825506 
+   12300    401.74548  -0.62723916   0.62723916 
+   12400    402.29277  -0.57859654   0.57859654 
+   12500    399.97374  -0.67053667   0.67053667 
+   12600    397.04098  -0.70377078   0.70377078 
+   12700    397.57383  -0.73221263   0.73221263 
+   12800    398.81214  -0.68318073   0.68318073 
+   12900    402.71871  -0.73216878   0.73216878 
+   13000    402.92814  -0.68559823   0.68559823 
+   13100    397.21694  -0.69865816   0.69865816 
+   13200    394.35017  -0.70190874   0.70190874 
+   13300    395.96845  -0.71125869   0.71125869 
+   13400     400.3227   -0.7884255    0.7884255 
+   13500    401.45234  -0.72532513   0.72532513 
+   13600    404.64095   -0.7474157    0.7474157 
+   13700    395.54503  -0.80236268   0.80236268 
+   13800    393.53552  -0.72589761   0.72589761 
+   13900    401.28726  -0.71165408   0.71165408 
+   14000    400.34475  -0.81222027   0.81222027 
+   14100     403.9149  -0.84700631   0.84700631 
+   14200    400.48391  -0.79805685   0.79805685 
+   14300    395.45883  -0.87757985   0.87757985 
+   14400    397.10871  -0.87546421   0.87546421 
+   14500    397.41556  -0.84115339   0.84115339 
+   14600    401.25701  -0.94232084   0.94232084 
+   14700    397.21719  -0.98875343   0.98875343 
+   14800    403.22052  -0.96085532   0.96085532 
+   14900    397.01593   -1.0337762    1.0337762 
+   15000    398.11029  -0.96416228   0.96416228 
+   15100    395.98804  -0.92478679   0.92478679 
+   15200    401.73333  -0.92149952   0.92149952 
+   15300    400.90827  -0.93471958   0.93471958 
+   15400    402.44095   -0.8943435    0.8943435 
+   15500     396.9343  -0.98593149   0.98593149 
+   15600    399.73621  -0.87798361   0.87798361 
+   15700    395.91763  -0.97605325   0.97605325 
+   15800    401.56096  -0.97044666   0.97044666 
+   15900    403.20994  -0.98476641   0.98476641 
+   16000    401.39792    -1.025329     1.025329 
+   16100    399.73327   -0.9640981    0.9640981 
+   16200    393.74645  -0.99418273   0.99418273 
+   16300    396.24367  -0.98163347   0.98163347 
+   16400    397.32886  -0.99093002   0.99093002 
+   16500    400.50121  -0.99593303   0.99593303 
+   16600    401.64129  -0.98904715   0.98904715 
+   16700    401.62019   -1.0151494    1.0151494 
+   16800    399.25145   -1.0712341    1.0712341 
+   16900    396.63782  -0.96471296   0.96471296 
+   17000    397.63725  -0.99508248   0.99508248 
+Loop time of 96.5184 on 64 procs for 5000 steps with 22088 atoms
+
+Performance: 8.952 ns/day, 2.681 hours/ns, 51.804 timesteps/s
+99.9% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 15.536     | 17.981     | 19.957     |  24.0 | 18.63
+Bond    | 0.30074    | 0.42454    | 0.61032    |   8.9 |  0.44
+Kspace  | 9.8445     | 11.648     | 14.059     |  29.6 | 12.07
+Neigh   | 2.5414     | 2.5849     | 2.6208     |   1.3 |  2.68
+Comm    | 3.9915     | 4.2475     | 4.5274     |   6.6 |  4.40
+Output  | 0.19728    | 0.19762    | 0.21457    |   0.5 |  0.20
+Modify  | 58.489     | 58.823     | 59.197     |   2.1 | 60.95
+Other   |            | 0.6106     |            |       |  0.63
+
+Nlocal:        345.125 ave         387 max         311 min
+Histogram: 6 5 2 12 10 13 12 1 1 2
+Nghost:        11443.0 ave       11558 max       11326 min
+Histogram: 1 5 4 11 10 9 12 8 3 1
+Neighs:        142491.0 ave      164130 max      122924 min
+Histogram: 3 0 10 9 12 13 9 5 1 2
+
+Total # of neighbors = 9119439
+Ave neighs/atom = 412.86848
+Ave special neighs/atom = 4.0121333
+Neighbor list builds = 429
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.22848649
+  grid = 20 20 216
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.003602696
+  estimated relative force accuracy = 1.0849412e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 19656 2700
+Neighbor list info ...
+  update every 2 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 5 5 35
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Total wall time: 0:04:37
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+acn_litfsi
+2c6cb5dbea9a3238353470cdd9d30081
+if_restart is  1

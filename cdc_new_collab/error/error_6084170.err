@@ -1,0 +1,23 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+Warning: importing 'simtk.openmm' is deprecated.  Import 'openmm' instead.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 6084170.0 ON nid004211 CANCELLED AT 2023-03-16T00:02:24 ***
+slurmstepd: error: *** JOB 6084170 ON nid004211 CANCELLED AT 2023-03-16T00:02:24 ***
