@@ -61,12 +61,12 @@ if "${if_restart} == 0" then "shell echo 0 > nrestart"
 
 variable nr file nrestart
 # dump 7 all xtc 100 conp_${xtcstep}.xtc
-dump 7 all xtc 1000 conp_${nr}.xtc
+dump 7 all xtc 100 conp_${nr}.xtc
 dump_modify 7 sort id
 shell echo $(v_nr+1) > nrestart # increment for next run
 
 
-dump 8 ele custom 1000 ele.lammpstrj id q
+dump 8 ele custom 100 ele.lammpstrj id q
 dump_modify 8 sort id
 if "${if_restart} == 1" then &
     "dump_modify 8 append yes"
@@ -82,16 +82,16 @@ if "${if_wat} == 0" then "fix constrainH all shake 0.0001 20 0 m 1.007947"
 if "${if_wat} == 1" then "fix constrainH all shake 0.0001 20 0 m 1.007947 a 1"
 
 
-timer timeout 72:00:00
+timer timeout 00:30:00
 
 fix 1 sol nvt temp ${temperature} ${temperature} $(100.0*dt)
 
-variable restartInterval equal 50000
-variable ccmEnd equal 100000
+variable restartInterval equal 1000
+variable ccmEnd equal 5000
 variable zeroPotentialStart equal ${ccmEnd}
-variable zeroPotentialEnd equal 2000000
+variable zeroPotentialEnd equal 8000
 variable nonzeroPotentialStart equal ${zeroPotentialEnd}
-variable nonzeroPotentialEnd equal 52000000
+variable nonzeroPotentialEnd equal 17000
 
 variable cstep1 equal step
 if "${cstep1} < ${ccmEnd}" then &
