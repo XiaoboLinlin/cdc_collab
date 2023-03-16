@@ -1,11 +1,12 @@
 from flow import FlowProject
 import signac
 import flow
-# import environment_for_rahman
-import environment_pbs
+import environment_for_rahman
+# import environment_pbs
 import MDAnalysis as mda
 import mdtraj as md
 import numpy as np
+import os
 
 def workspace_command(cmd):
     """Simple command to always go to the workspace directory"""
@@ -81,7 +82,7 @@ def rerun_cpm(job):
 
 q_file = "q.txt"
 @Project.label
-def clean_save_q(job):
+def clean_save_q_xtc(job):
     return job.isfile(q_file)
 
 result_file = 'restart.final'
@@ -90,122 +91,76 @@ result_file = 'restart.final'
 @Project.operation
 @Project.pre.isfile(result_file)
 @Project.post.isfile(q_file)
-def run_clean_save_q(job):
+def run_clean_save_q_xtc(job):
     ### clean original dump file and save q
     
     ### step 1: clean original dump file: delete overlaped frames and the last frame
-    import time
-    from CPManalysis.clean_file import clean_dumpfile
-    from CPManalysis.read_file import q_np
-    tic = time.perf_counter()
-    print(job.id,flush=True)
-    print("start to clean and create new new_conp.lammpstrj, 2.5 min", flush=True)
-    original_trj_file = os.path.join(job.ws, 'conp.lammpstrj')
+    with job:
+        import time
+        from CPManalysis.clean_file import clean_dumpfile
+        from CPManalysis.read_file import q_np2
+        tic = time.perf_counter()
+        print(job.id,flush=True)
+        print("start to clean and create new new_ele.lammpstrj, 2.5 min", flush=True)
+        original_trj_file, trj_file = 'ele.lammpstrj', 'new_ele.lammpstrj'
+        new_content = clean_dumpfile(original_trj_file, keep_last_frame=True)
+        text_file = open(trj_file, "w")
+        n = text_file.write(new_content)
+        text_file.close()
+        toc = time.perf_counter()
+        print(f"total time of clean conp.lammpstrj is {toc - tic:0.4f} seconds", flush=True)
+        
+        ### step 2: save q to .npy file
+        toc = time.perf_counter()
+        print('start to save charge.npy file, 7 min', flush=True)
+        top_file, charge_file = 'system_lmp.gro', 'charge.npy'
+        u_gro = mda.Universe(top_file)
+        u_ele = u_gro.select_atoms('resid 1')
+        n_atom_ele = u_ele.n_atoms * 2 # *2 because two electrodes
+        charge_2d = q_np2(trj_file, n_atom_ele)
+        np.save(charge_file, charge_2d)
+        print('it is done', flush=True)
+        toc = time.perf_counter()
+        print(f"total time of saving q is {toc - tic:0.4f} seconds", flush=True)
+        
+        ### step 3: generate combined nonoverlaped xtc files
+        u = mda.Universe('system_lmp.gro', 'conp_0.xtc','conp_1.xtc', continuous=True)
+        # write combined xtc file
+        u_all = u.select_atoms("all")
+        with mda.Writer("conp_total.xtc", u_all.n_atoms) as W:
+            for ts in u.trajectory:
+                W.write(u_all)
+            
+        np.savetxt(os.path.join(job.workspace(), 'q.txt'), [1,1])
     
-    new_content = clean_dumpfile(original_trj_file)
-
-    trj_file = os.path.join(job.ws, 'new_conp.lammpstrj')
-    text_file = open(trj_file, "w")
-    n = text_file.write(new_content)
-    text_file.close()
-    toc = time.perf_counter()
-    print(f"total time of clean conp.lammpstrj is {toc - tic:0.4f} seconds", flush=True)
-    
-    ### step 2: save q to .npy file
-    toc = time.perf_counter()
-    print('start to save charge.npy file, 7 min', flush=True)
-    
-    top_file = os.path.join(job.ws, 'system_lmp.gro')
-    u = mda.Universe(top_file)
-    n_atom = u.atoms.n_atoms
-    charge_2d = q_np(trj_file, n_atom)
-    charge_file = os.path.join(job.ws, 'charge.npy')
-    np.save(charge_file, charge_2d)
-    np.savetxt(os.path.join(job.workspace(), 'q.txt'), [1,1])
-    print('it is done', flush=True)
-    toc = time.perf_counter()
-    print(f"total time of saving q is {toc - tic:0.4f} seconds", flush=True)
-
-conpxtc_file = 'xtc.txt'
+conp_unwrapped_file =  'conp_prepare_done.txt'
 @Project.label
-def save_xtc(job):
-    return job.isfile(conpxtc_file)
+def prepared(job):
+    return job.isfile(conp_unwrapped_file)
 
-new_conp_file = 'q.txt'
-@Project.operation
-@Project.pre.isfile(new_conp_file)
-@Project.post.isfile(conpxtc_file)
-def run_save_xtc(job):
-    ### save .xtc file using new_conp.lammpstrj file
-    print('start to save conp.xtc file, 25 min', flush=True)
-    trj_file = os.path.join(job.ws, 'new_conp.lammpstrj')
-    top_file = os.path.join(job.ws, 'system_lmp.gro')
-    trj = md.load(trj_file, top=top_file)
-    save_file = os.path.join(job.ws, 'new_conp.xtc')
-    trj.save(save_file)
-    np.savetxt(os.path.join(job.workspace(), 'xtc.txt'), [1,1])
-    print('it is done', flush=True)
-    
-
-total_save_file = "total_save_done.txt"
-@Project.label
-def total_save(job):
-    return job.isfile(total_save_file)
-
-result_file = 'restart.final'
-@Project.operation
-@Project.pre.isfile(result_file)
-@Project.post.isfile(total_save_file)
-def run_total_save(job):
-    # print(job.id)
-    ### step 1: produce cleaned lammpstrj with original charge(new_conp.lammpstrj) and save original charge info to charge.npy file.
-    run_clean_save_q(job)
-    # ### step 2: save xtc file
-    run_save_xtc(job)
-    ### resulting production file: charge.npy, charge_modified.npy, new_conp.lammpstrj, new_conp_modified.lammpstrj
-    np.savetxt(os.path.join(job.workspace(), 'total_save_done.txt'), [1,1])
-    
-
-@Project.label
-def save_pele_q(job):
-    return job.isfile(pele_q_file)
-
-pele_q_file = "pele_q_file.txt"
 @Project.operation
 @Project.pre.isfile(q_file)
-@Project.post.isfile(pele_q_file)
-def run_save_pele_q(job):
-    ### produce new charge.npy files with discarded frames and atom charge summation calculation for positive electrode
-    print('start to save pele_q', flush=True)
-    charge_file = os.path.join(job.workspace(), "charge.npy")
-    charge = np.load(charge_file)
-    # if job.statepoint()['seed'] ==3:
-    #     discard_frame = 2000
-    # else:
-    #     discard_frame = 50
-    # charge = charge[discard_frame:]
-    
-    ### new_charge.npy is the atom charge after discarded frames
-    # new_charge_file = os.path.join(job.ws, 'new_charge.npy')
-    # np.save(new_charge_file, charge)
-    
-    gro_file = os.path.join(job.workspace(), "system_lmp.gro")
-    gro_trj = md.load(gro_file)
-    
-    pos_ele = gro_trj.top.select('residue 1') ## IMportant: residue in mdtraj equal to resid in VMD and in gro file
-    pos_trj = gro_trj.atom_slice(pos_ele)
-    pos_charge = charge[:,pos_ele]
-    sum_pos_q = np.sum(pos_charge, axis =1)
-    xdata = np.arange(0, len(sum_pos_q),1)
-    xdata = xdata * 0.002
-    post_pele_charge = np.stack((xdata, sum_pos_q), axis = 1)
-    
-    ### pele_charge.npy is summed charge in positive electrode
-    pele_charge_file = os.path.join(job.ws, 'pele_charge.npy') ### 
-    np.save(pele_charge_file, post_pele_charge)
-    np.savetxt(os.path.join(job.workspace(), 'pele_q_file.txt'), [1,1])
-    print('it is done')
+@Project.post.isfile(conp_unwrapped_file)
+def prepare(job):
+    from CPManalysis.gromacs import make_comtrj
+    xtc_file = os.path.join(job.workspace(), 'conp_total.xtc')
+    gro_file = os.path.join(job.workspace(), 'system_lmp.gro')
 
+    if os.path.isfile(xtc_file) and os.path.isfile(gro_file):
+        unwrapped_trj = os.path.join(job.workspace(),
+        'conp_unwrapped.xtc')
+        os.system('echo 0 | gmx trjconv -f {0} -o {1} -s {2} -pbc nojump'.format(xtc_file, unwrapped_trj, gro_file))
+
+        unwrapped_com_trj = os.path.join(job.ws,'conp_com_unwrapped.xtc')
+
+        print('start to load')
+        trj = md.load(unwrapped_trj, top=gro_file)
+        comtrj = make_comtrj(trj)
+        comtrj.save_xtc(unwrapped_com_trj)
+        comtrj[-1].save_gro(os.path.join(job.workspace(),
+             'com.gro'))
+        np.savetxt(os.path.join(job.workspace(), 'conp_prepare_done.txt'), [1,1])
+     
 
 if __name__ == "__main__":
     Project().main()
